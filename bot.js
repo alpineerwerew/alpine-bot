@@ -1,16 +1,16 @@
 // ==========================
-// Alpine Connexion Bot - Webhook Version
+// Alpine Connexion Bot - Render + Webhook
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
 const express = require("express");
 const fs = require("fs");
-require("dotenv").config(); // charge le fichier .env
+require("dotenv").config();
 
-// 🔑 Token du bot
+// 🔑 Token du bot depuis Render (.env)
 const token = process.env.BOT_TOKEN;
 if (!token) {
-  console.error("❌ BOT_TOKEN manquant dans .env");
+  console.error("❌ BOT_TOKEN manquant dans .env ou Render");
   process.exit(1);
 }
 
@@ -20,23 +20,27 @@ if (!token) {
 const app = express();
 const bot = new TelegramBot(token, { webHook: true });
 
-// URL publique Render (⚠️ adapte avec ton vrai lien Render)
+// ⚠️ URL Render → adapte avec ton vrai lien
 const url = "https://alpine-bot-p68h.onrender.com";
 
-// Webhook Telegram → Express
+// Définir le webhook
 bot.setWebHook(`${url}/bot${token}`);
-app.use(bot.webHookCallback(`/bot${token}`));
+
+// Middleware Express pour traiter les updates Telegram
+app.use(express.json());
+app.post(`/bot${token}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
 
 // ==========================
 // Gestion des utilisateurs
 // ==========================
 const USERS_FILE = "users.json";
-
 let users = [];
 if (fs.existsSync(USERS_FILE)) {
   users = JSON.parse(fs.readFileSync(USERS_FILE));
 }
-
 const ADMIN_ID = "8424992186"; // Ton ID admin
 
 function saveUsers() {
@@ -159,7 +163,7 @@ function sendMainMenu(chatId, lang) {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
         [{ text: "📞 Contact", url: "https://linktr.ee/alpinec" }],
-        [{ text: "📱 Mini-App", url: "https://alpine-417.pages.dev/" }],
+        [{ text: "📱 Mini-App", url: "https://hghg-cqz.pages.dev/" }],
       ],
     },
   });
