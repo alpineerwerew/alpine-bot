@@ -23,10 +23,14 @@ export default function Product() {
               Tous les Produits
             </h1>
 
-            {/* Grille Produits */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {/* Carousel Produits (remplace la grille) */}
+            <div className="flex overflow-x-auto space-x-6 snap-x snap-mandatory scrollbar-hide pb-6">
               {products.map((p) => (
-                <a key={p.id} href={`/product/${p.id}`}>
+                <a
+                  key={p.id}
+                  href={`/product/${p.id}`}
+                  className="flex-shrink-0 w-64 snap-start"
+                >
                   <div className="cursor-pointer flex flex-col w-full relative overflow-hidden rounded-2xl bg-gray-900/60 backdrop-blur-md border border-gray-700 shadow-lg transition-all duration-300 hover:shadow-yellow-500/30 hover:border-yellow-400 hover:scale-[1.03]">
                     
                     {/* Image produit */}
