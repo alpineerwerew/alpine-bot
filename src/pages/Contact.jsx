@@ -10,11 +10,13 @@ export default function Contact() {
       title: "LinkTree",
       description: t("linktree_desc"),
       href: "https://linktr.ee/alpinec",
+      icon: "🌐",
     },
     {
       title: "Instagram",
       description: t("instagram_desc"),
       href: "https://instagram.com/alpinerocket710",
+      icon: "📸",
     },
   ];
 
@@ -73,16 +75,33 @@ export default function Contact() {
                 rel="noopener noreferrer"
                 className="flex items-center bg-white bg-opacity-10 backdrop-blur-lg p-6 rounded-xl hover:bg-opacity-20 transition-all duration-300 cursor-pointer shadow-lg"
               >
-                <div className="mr-6 text-yellow-400">🌐</div>
+                <div className="mr-6 text-yellow-400 text-2xl">{c.icon}</div>
                 <div>
                   <h2 className="text-2xl font-semibold">{c.title}</h2>
                   <p className="text-sm text-gray-400 mt-1">{c.description}</p>
+                </div>
+                <div className="ml-auto text-blue-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    ></path>
+                  </svg>
                 </div>
               </a>
             ))}
           </div>
         </main>
 
+        {/* Footer */}
         <Footer />
       </div>
     </div>

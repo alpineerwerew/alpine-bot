@@ -1,4 +1,11 @@
 {
+  "all_products": "Tous les Produits",
+  "product_not_found": "Produit introuvable",
+  "farm": "Ferme",
+  "strains": "Variétés",
+  "price": "Prix",
+  "order_now": "Commander Maintenant",
+  "back": "Retour",
   "services": "Nos Services",
   "services_text": "Livraison premium et discrète en Suisse & International. Service rapide, fiable et sécurisé.",
   "delivery_zones": "Zones de Livraison",
@@ -13,5 +20,8 @@
   "cash_delivery": "À la livraison",
   "crypto_payment": "Cryptomonnaie",
   "crypto_advance": "Paiement à l’avance",
-  "rights": "Tous droits réservés"
+  "rights": "Tous droits réservés",
+  "contact_us": "Nous Contacter",
+  "linktree_desc": "Accédez à tous nos canaux en un clic",
+  "instagram_desc": "Suivez-nous sur Instagram"
 }
