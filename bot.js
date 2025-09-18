@@ -138,7 +138,7 @@ function sendMainMenu(chatId, lang) {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
         [{ text: "📞 Contact", url: "https://linktr.ee/alpinec" }],
-        [{ text: "📱 Mini-App", url: "chic-kringle-baa2cb.netlify.app" }],
+        [{ text: "📱 Mini-App", url: "https://hghg-cqz.pages.dev" }],
       ],
     },
   });
