@@ -1,6 +1,6 @@
 const TelegramBot = require("node-telegram-bot-api");
 const fs = require("fs");
-require("dotenv").config(); // ✅ Charge les variables du .env
+require("dotenv").config(); // ✅ charge .env
 
 // 🔑 Token du bot depuis .env
 const token = process.env.BOT_TOKEN;
@@ -28,7 +28,7 @@ function saveUsers() {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// ➤ Textes traduits (❌ sans produits)
+// ➤ Textes traduits
 const texts = {
   fr: {
     welcome: "💛 Bienvenue chez *Alpine Connexion* 💛",
@@ -111,13 +111,11 @@ bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
 
-  // Détection de la langue choisie
   if (data.startsWith("lang_")) {
     const lang = data.split("_")[1];
     sendMainMenu(chatId, lang);
   }
 
-  // Informations
   if (data.startsWith("info_")) {
     const lang = data.split("_")[1];
     bot.sendMessage(chatId, texts[lang].info, {
@@ -129,7 +127,7 @@ bot.on("callback_query", (query) => {
   }
 });
 
-// ➤ Fonction d’affichage du menu principal (avec lien Mini-App mis à jour)
+// ➤ Fonction d’affichage du menu principal
 function sendMainMenu(chatId, lang) {
   bot.sendPhoto(chatId, "https://i.ibb.co/Xk75qN15/logo.jpg", {
     caption: texts[lang].welcome,
@@ -138,13 +136,13 @@ function sendMainMenu(chatId, lang) {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
         [{ text: "📞 Contact", url: "https://linktr.ee/alpinec" }],
-        [{ text: "📱 Mini-App", url: "https://hghg-cqz.pages.dev/" }], // ✅ lien corrigé
+        [{ text: "📱 Mini-App", url: "https://hghg-cqz.pages.dev/" }],
       ],
     },
   });
 }
 
-// ➤ Commande /sendall réservée à l’admin
+// ➤ Commande /sendall pour admin
 bot.onText(/\/sendall (.+)/, (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
@@ -156,4 +154,21 @@ bot.onText(/\/sendall (.+)/, (msg, match) => {
   });
 
   bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
+});
+
+
+// ==========================
+// ✅ SERVEUR EXPRESS POUR RENDER
+// ==========================
+const express = require("express");
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Bot Alpine Connexion est en ligne 🚀");
+});
+
+// Render fournit PORT automatiquement
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Serveur Express lancé sur le port ${PORT}`);
 });
