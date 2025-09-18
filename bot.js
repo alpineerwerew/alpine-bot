@@ -1,8 +1,14 @@
 const TelegramBot = require("node-telegram-bot-api");
 const fs = require("fs");
+require("dotenv").config(); // ✅ Charge les variables du .env
 
-// 🔑 Token du bot
-const token = "8466815205:AAHYnm_9QK3sMd29eBO6l_zDIBqot6QqVrA";
+// 🔑 Token du bot depuis .env
+const token = process.env.BOT_TOKEN;
+if (!token) {
+  console.error("❌ BOT_TOKEN manquant dans .env");
+  process.exit(1);
+}
+
 const bot = new TelegramBot(token, { polling: true });
 
 // 📌 Fichier pour sauvegarder les utilisateurs
@@ -132,7 +138,7 @@ function sendMainMenu(chatId, lang) {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
         [{ text: "📞 Contact", url: "https://linktr.ee/alpinec" }],
-        [{ text: " Mini-App", url: "chic-kringle-baa2cb.netlify.app" }],
+        [{ text: "📱 Mini-App", url: "chic-kringle-baa2cb.netlify.app" }],
       ],
     },
   });
