@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "title": "ZANGBANGER",
+    "label": "USA 🇺🇸",
+    "producer": "WIZARD TREES",
+    "description": "Zangbanger – une variété premium par Wizard Trees.",
+    "image": "/images/zangbanger.jpg",
+    "prices": [
+      { "weight": "3.5G", "price": "150 CHF" },
+      { "weight": "7G", "price": "280 CHF" },
+      { "weight": "14G", "price": "550 CHF" },
+      { "weight": "28G", "price": "1000 CHF" }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "LIVE HASH ROSIN 2G",
+    "label": "USA 🇺🇸",
+    "producer": "BORED ROSIN",
+    "description": "🔥 **Live Hash Rosin premium** – une extraction artisanale aux saveurs pures et intenses.\n\n✨ Qualité exceptionnelle, au plus proche de la plante, pour une expérience unique.",
+    "image": "/images/boredrosin.jpg",
+    "prices": [
+      { "weight": "2G", "price": "180 CHF" },
+      { "weight": "3x2G", "price": "450 CHF" },
+      { "weight": "5x2G", "price": "850 CHF" },
+      { "weight": "10x2G", "price": "1500 CHF" }
+    ],
+    "strains": [
+      { "name": "Dulce de Limon", "emoji": "🍋" },
+      { "name": "Lazerjet", "emoji": "⚡" },
+      { "name": "Sour Sprizter", "emoji": "🍇" },
+      { "name": "Garlic Drip", "emoji": "🧄" }
+    ]
+  }
+]
