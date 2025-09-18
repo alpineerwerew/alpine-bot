@@ -1,10 +1,10 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook
+// Alpine Connexion Bot - Render + Webhook + SQLite
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
 const express = require("express");
-const fs = require("fs");
+const sqlite3 = require("sqlite3").verbose();
 require("dotenv").config();
 
 // 🔑 Token du bot depuis Render (.env)
@@ -34,17 +34,56 @@ app.post(`/bot${token}`, (req, res) => {
 });
 
 // ==========================
-// Gestion des utilisateurs
+// Base de données SQLite
 // ==========================
-const USERS_FILE = "users.json";
-let users = [];
-if (fs.existsSync(USERS_FILE)) {
-  users = JSON.parse(fs.readFileSync(USERS_FILE));
-}
+const db = new sqlite3.Database("users.db", (err) => {
+  if (err) {
+    console.error("❌ Erreur connexion DB:", err.message);
+  } else {
+    console.log("✅ Connecté à SQLite (users.db)");
+  }
+});
+
+// Créer la table si elle n’existe pas
+db.run(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    first_name TEXT,
+    last_name TEXT,
+    username TEXT
+  )
+`);
+
 const ADMIN_ID = "8424992186"; // Ton ID admin
 
-function saveUsers() {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+// Ajouter un utilisateur
+function addUser(user) {
+  db.get("SELECT id FROM users WHERE id = ?", [user.id], (err, row) => {
+    if (err) return console.error("❌ Erreur SELECT:", err.message);
+
+    if (!row) {
+      db.run(
+        "INSERT INTO users (id, first_name, last_name, username) VALUES (?, ?, ?, ?)",
+        [user.id, user.first_name, user.last_name, user.username],
+        (err) => {
+          if (err) console.error("❌ Erreur INSERT:", err.message);
+          else console.log(`✅ Nouvel utilisateur ajouté: ${JSON.stringify(user)}`);
+        }
+      );
+    }
+  });
+}
+
+// Récupérer tous les utilisateurs
+function getUsers(callback) {
+  db.all("SELECT * FROM users", [], (err, rows) => {
+    if (err) {
+      console.error("❌ Erreur SELECT:", err.message);
+      callback([]);
+    } else {
+      callback(rows);
+    }
+  });
 }
 
 // ==========================
@@ -113,10 +152,7 @@ bot.onText(/\/start/, (msg) => {
     username: msg.chat.username || "",
   };
 
-  if (!users.find((u) => u.id === chatId)) {
-    users.push(user);
-    saveUsers();
-  }
+  addUser(user);
 
   bot.sendMessage(chatId, "🌍 Choisissez votre langue / Choose your language / Wählen Sie Ihre Sprache :", {
     reply_markup: {
@@ -178,11 +214,31 @@ bot.onText(/\/sendall (.+)/, (msg, match) => {
   }
 
   const text = match[1];
-  users.forEach((user) => {
-    bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" }).catch(() => {});
-  });
+  getUsers((users) => {
+    users.forEach((user) => {
+      bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" }).catch(() => {});
+    });
 
-  bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
+    bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
+  });
+});
+
+// ==========================
+// Commande /listusers
+// ==========================
+bot.onText(/\/listusers/, (msg) => {
+  if (msg.chat.id.toString() !== ADMIN_ID) {
+    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
+  }
+
+  getUsers((users) => {
+    if (users.length === 0) {
+      return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
+    }
+
+    let list = users.map(u => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`).join("\n");
+    bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, { parse_mode: "Markdown" });
+  });
 });
 
 // ==========================
