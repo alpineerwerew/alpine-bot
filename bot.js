@@ -1,34 +1,51 @@
-const TelegramBot = require("node-telegram-bot-api");
-const fs = require("fs");
-require("dotenv").config(); // ✅ charge .env
+// ==========================
+// Alpine Connexion Bot - Webhook Version
+// ==========================
 
-// 🔑 Token du bot depuis .env
+const TelegramBot = require("node-telegram-bot-api");
+const express = require("express");
+const fs = require("fs");
+require("dotenv").config(); // charge le fichier .env
+
+// 🔑 Token du bot
 const token = process.env.BOT_TOKEN;
 if (!token) {
   console.error("❌ BOT_TOKEN manquant dans .env");
   process.exit(1);
 }
 
-const bot = new TelegramBot(token, { polling: true });
+// ==========================
+// Initialisation Bot + Express
+// ==========================
+const app = express();
+const bot = new TelegramBot(token, { webHook: true });
 
-// 📌 Fichier pour sauvegarder les utilisateurs
+// URL publique Render (⚠️ adapte avec ton vrai lien Render)
+const url = "https://alpine-bot-p68h.onrender.com";
+
+// Webhook Telegram → Express
+bot.setWebHook(`${url}/bot${token}`);
+app.use(bot.webHookCallback(`/bot${token}`));
+
+// ==========================
+// Gestion des utilisateurs
+// ==========================
 const USERS_FILE = "users.json";
 
-// Charger les utilisateurs existants
 let users = [];
 if (fs.existsSync(USERS_FILE)) {
   users = JSON.parse(fs.readFileSync(USERS_FILE));
 }
 
-// ID admin pour /sendall
-const ADMIN_ID = "8424992186";
+const ADMIN_ID = "8424992186"; // Ton ID admin
 
-// ➤ Sauvegarde utilisateurs
 function saveUsers() {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// ➤ Textes traduits
+// ==========================
+// Textes traduits
+// ==========================
 const texts = {
   fr: {
     welcome: "💛 Bienvenue chez *Alpine Connexion* 💛",
@@ -80,7 +97,9 @@ const texts = {
   },
 };
 
-// ➤ Quand un utilisateur lance /start
+// ==========================
+// Commande /start
+// ==========================
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const user = {
@@ -106,7 +125,9 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
-// ➤ Gestion des boutons
+// ==========================
+// Boutons
+// ==========================
 bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
@@ -127,7 +148,9 @@ bot.on("callback_query", (query) => {
   }
 });
 
-// ➤ Fonction d’affichage du menu principal
+// ==========================
+// Menu principal
+// ==========================
 function sendMainMenu(chatId, lang) {
   bot.sendPhoto(chatId, "https://i.ibb.co/Xk75qN15/logo.jpg", {
     caption: texts[lang].welcome,
@@ -142,7 +165,9 @@ function sendMainMenu(chatId, lang) {
   });
 }
 
-// ➤ Commande /sendall pour admin
+// ==========================
+// Commande /sendall
+// ==========================
 bot.onText(/\/sendall (.+)/, (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
@@ -156,19 +181,14 @@ bot.onText(/\/sendall (.+)/, (msg, match) => {
   bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
 });
 
-
 // ==========================
-// ✅ SERVEUR EXPRESS POUR RENDER
+// Express server
 // ==========================
-const express = require("express");
-const app = express();
-
 app.get("/", (req, res) => {
-  res.send("Bot Alpine Connexion est en ligne 🚀");
+  res.send("🤖 Bot Alpine Connexion est en ligne via Webhook 🚀");
 });
 
-// Render fournit PORT automatiquement
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Serveur Express lancé sur le port ${PORT}`);
+  console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
