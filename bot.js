@@ -129,7 +129,7 @@ bot.on("callback_query", (query) => {
   }
 });
 
-// ➤ Fonction d’affichage du menu principal (sans produits)
+// ➤ Fonction d’affichage du menu principal (avec lien Mini-App mis à jour)
 function sendMainMenu(chatId, lang) {
   bot.sendPhoto(chatId, "https://i.ibb.co/Xk75qN15/logo.jpg", {
     caption: texts[lang].welcome,
@@ -138,7 +138,7 @@ function sendMainMenu(chatId, lang) {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
         [{ text: "📞 Contact", url: "https://linktr.ee/alpinec" }],
-        [{ text: "📱 Mini-App", url: "https://hghg-cqz.pages.dev" }],
+        [{ text: "📱 Mini-App", url: "https://hghg-cqz.pages.dev/" }], // ✅ lien corrigé
       ],
     },
   });

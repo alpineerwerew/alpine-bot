@@ -19,39 +19,9 @@ export default function Contact() {
       ),
     },
     {
-      title: "WhatsApp",
-      description: "Contactez-nous directement",
-      href: "https://wa.me/33745558764",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 448 512"
-          className="w-8 h-8"
-          fill="currentColor"
-        >
-          <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Telegram",
-      description: "Rejoignez notre canal pour les mises à jour",
-      href: "https://t.me/alpineconnexion", // <-- adapte ton vrai canal
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 496 512"
-          className="w-8 h-8"
-          fill="currentColor"
-        >
-          <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8z" />
-        </svg>
-      ),
-    },
-    {
       title: "Instagram",
       description: "Suivez-nous sur Instagram",
-      href: "https://instagram.com/alpineconnexion", // <-- ton lien
+      href: "https://instagram.com/alpinerocket710",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
