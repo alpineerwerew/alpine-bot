@@ -1,12 +1,17 @@
 {
-  "home": "Accueil",
-  "products": "Produits",
-  "categories": "Catégories",
-  "contact": "Contact",
   "services": "Nos Services",
-  "deliveryZone": "Zone de Livraison",
-  "meetup": "Meet Up",
+  "services_text": "Livraison premium et discrète en Suisse & International. Service rapide, fiable et sécurisé.",
+  "delivery_zones": "Zones de Livraison",
+  "delivery_text": "Suisse entière + envois internationaux sécurisés.",
+  "delivery_warning": "⚠️ Des frais supplémentaires peuvent s’appliquer selon votre localisation.",
+  "meetup": "Meet-up",
+  "meetup_text": "Rendez-vous disponibles 7j/7 à Valais Centre.",
   "commitment": "Notre Engagement",
-  "paymentMethods": "Modes de Paiement",
-  "orderNow": "Nous Contacter"
+  "commitment_text": "Produits sélectionnés avec soin pour garantir qualité, sécurité et satisfaction.",
+  "payment_methods": "Modes de Paiement",
+  "cash_payment": "Paiement en Cash",
+  "cash_delivery": "À la livraison",
+  "crypto_payment": "Cryptomonnaie",
+  "crypto_advance": "Paiement à l’avance",
+  "rights": "Tous droits réservés"
 }

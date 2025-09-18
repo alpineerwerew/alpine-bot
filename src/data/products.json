@@ -4,7 +4,11 @@
     "title": "ZANGBANGER",
     "label": "USA 🇺🇸",
     "producer": "WIZARD TREES",
-    "description": "Zangbanger – une variété premium par Wizard Trees.",
+    "description": {
+      "fr": "Zangbanger – une variété premium par Wizard Trees.",
+      "en": "Zangbanger – a premium strain by Wizard Trees.",
+      "de": "Zangbanger – eine Premium-Sorte von Wizard Trees."
+    },
     "image": "/images/zangbanger.jpg",
     "prices": [
       { "weight": "3.5G", "price": "150 CHF" },
@@ -18,8 +22,12 @@
     "title": "LIVE HASH ROSIN 2G",
     "label": "USA 🇺🇸",
     "producer": "BORED ROSIN",
-    "description": "🔥 **Live Hash Rosin premium** – une extraction artisanale aux saveurs pures et intenses.\n\n✨ Qualité exceptionnelle, au plus proche de la plante, pour une expérience unique.",
-    "image": "/images/boredrosinno.jpg",
+    "description": {
+      "fr": "🔥 Live Hash Rosin premium – une extraction artisanale aux saveurs pures et intenses.\n\n✨ Qualité exceptionnelle, au plus proche de la plante, pour une expérience unique.",
+      "en": "🔥 Premium Live Hash Rosin – handcrafted extraction with pure and intense flavors.\n\n✨ Exceptional quality, staying true to the plant, for a unique experience.",
+      "de": "🔥 Premium Live Hash Rosin – handgefertigte Extraktion mit reinen und intensiven Aromen.\n\n✨ Außergewöhnliche Qualität, naturgetreu, für ein einzigartiges Erlebnis."
+    },
+    "image": "/images/boredrosin.jpg",
     "prices": [
       { "weight": "2G", "price": "180 CHF" },
       { "weight": "3x2G", "price": "450 CHF" },

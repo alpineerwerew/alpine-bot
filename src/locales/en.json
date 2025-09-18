@@ -1,12 +1,17 @@
 {
-  "home": "Home",
-  "products": "Products",
-  "categories": "Categories",
-  "contact": "Contact",
   "services": "Our Services",
-  "deliveryZone": "Delivery Zone",
-  "meetup": "Meet Up",
+  "services_text": "Premium and discreet delivery in Switzerland & International. Fast, reliable and secure service.",
+  "delivery_zones": "Delivery Zones",
+  "delivery_text": "All of Switzerland + secure international shipping.",
+  "delivery_warning": "⚠️ Additional fees may apply depending on your location.",
+  "meetup": "Meet-up",
+  "meetup_text": "Appointments available 7 days a week in Valais Center.",
   "commitment": "Our Commitment",
-  "paymentMethods": "Payment Methods",
-  "orderNow": "Contact Us"
+  "commitment_text": "Products carefully selected to guarantee quality, safety and satisfaction.",
+  "payment_methods": "Payment Methods",
+  "cash_payment": "Cash Payment",
+  "cash_delivery": "Upon delivery",
+  "crypto_payment": "Cryptocurrency",
+  "crypto_advance": "Advance payment",
+  "rights": "All rights reserved"
 }

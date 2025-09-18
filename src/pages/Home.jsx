@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Footer from "../components/Footer";
+import { useTranslation } from "react-i18next";
 
 function AccordionCard({ title, icon, children }) {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,12 @@ function AccordionCard({ title, icon, children }) {
 }
 
 export default function Home() {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+  };
+
   return (
     <div className="min-h-screen w-full text-white relative overflow-hidden pb-20">
       {/* Background */}
@@ -63,12 +70,32 @@ export default function Home() {
       {/* Contenu */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <main className="flex-grow pb-20">
-          {/* Logo centré avec halo hover */}
+          {/* Sélecteur de langue */}
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              onClick={() => changeLanguage("fr")}
+              className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-yellow-500/30 transition"
+            >
+              🇫🇷
+            </button>
+            <button
+              onClick={() => changeLanguage("en")}
+              className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-yellow-500/30 transition"
+            >
+              🇬🇧
+            </button>
+            <button
+              onClick={() => changeLanguage("de")}
+              className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-yellow-500/30 transition"
+            >
+              🇩🇪
+            </button>
+          </div>
+
+          {/* Logo centré */}
           <div className="pt-20 flex justify-center">
             <div className="relative group inline-block">
-              {/* Halo gradient */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 opacity-0 blur-3xl transition duration-500 group-hover:opacity-40"></div>
-
               <img
                 src="/logo.png"
                 alt="Alpine Connexion"
@@ -79,58 +106,51 @@ export default function Home() {
 
           {/* Accordéons */}
           <div className="max-w-md mx-auto mt-12 space-y-4">
-            <AccordionCard title="Nos Services" icon="🚚">
-              <p>
-                Livraison premium et discrète en Suisse & International. Service
-                rapide, fiable et sécurisé.
-              </p>
+            <AccordionCard title={t("services")} icon="🚚">
+              <p>{t("services_text")}</p>
             </AccordionCard>
 
-            <AccordionCard title="Zones de Livraison" icon="📦">
-              <p>Suisse entière + envois internationaux sécurisés.</p>
+            <AccordionCard title={t("delivery_zones")} icon="📦">
+              <p>{t("delivery_text")}</p>
               <p className="text-yellow-400 mt-2 text-sm">
-                ⚠️ Des frais supplémentaires peuvent s’appliquer selon votre
-                localisation.
+                {t("delivery_warning")}
               </p>
             </AccordionCard>
 
-            <AccordionCard title="Meet-up" icon="📍">
-              <p>Rendez-vous disponibles 7j/7 à Valais Centre.</p>
+            <AccordionCard title={t("meetup")} icon="📍">
+              <p>{t("meetup_text")}</p>
             </AccordionCard>
 
-            <AccordionCard title="Notre Engagement" icon="❤️">
-              <p className="italic">
-                Produits sélectionnés avec soin pour garantir qualité,
-                sécurité et satisfaction.
-              </p>
+            <AccordionCard title={t("commitment")} icon="❤️">
+              <p className="italic">{t("commitment_text")}</p>
             </AccordionCard>
 
-            <AccordionCard title="Modes de Paiement" icon="💳">
+            <AccordionCard title={t("payment_methods")} icon="💳">
               <div className="space-y-3">
-                {/* Paiement Cash */}
                 <div className="p-3 bg-gray-800/60 rounded-lg flex items-center hover:bg-gray-700/70 transition-all duration-200">
                   <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-3">
                     <span className="text-lg">💶</span>
                   </div>
                   <div>
                     <p className="font-medium text-white text-sm sm:text-base">
-                      Paiement en Cash
+                      {t("cash_payment")}
                     </p>
-                    <p className="text-xs text-gray-400">À la livraison</p>
+                    <p className="text-xs text-gray-400">
+                      {t("cash_delivery")}
+                    </p>
                   </div>
                 </div>
 
-                {/* Paiement Crypto */}
                 <div className="p-3 bg-gray-800/60 rounded-lg flex items-center hover:bg-gray-700/70 transition-all duration-200">
                   <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-3">
                     <span className="text-lg">₿</span>
                   </div>
                   <div>
                     <p className="font-medium text-white text-sm sm:text-base">
-                      Cryptomonnaie
+                      {t("crypto_payment")}
                     </p>
                     <p className="text-xs text-gray-400">
-                      Paiement à l’avance
+                      {t("crypto_advance")}
                     </p>
                   </div>
                 </div>
@@ -140,12 +160,11 @@ export default function Home() {
 
           {/* Copyright */}
           <div className="mt-12 text-center text-gray-400 text-xs">
-            © 2025 Alpine Connexion – Tous droits réservés
+            © 2025 Alpine Connexion – {t("rights")}
           </div>
         </main>
       </div>
 
-      {/* Footer global */}
       <Footer />
     </div>
   );

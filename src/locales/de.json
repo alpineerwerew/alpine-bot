@@ -1,12 +1,17 @@
 {
-  "home": "Startseite",
-  "products": "Produkte",
-  "categories": "Kategorien",
-  "contact": "Kontakt",
   "services": "Unsere Dienstleistungen",
-  "deliveryZone": "Liefergebiet",
-  "meetup": "Treffpunkt",
+  "services_text": "Premium- und diskrete Lieferung in der Schweiz & international. Schneller, zuverlässiger und sicherer Service.",
+  "delivery_zones": "Lieferzonen",
+  "delivery_text": "Ganze Schweiz + sichere internationale Lieferungen.",
+  "delivery_warning": "⚠️ Zusätzliche Gebühren können je nach Standort anfallen.",
+  "meetup": "Treffen",
+  "meetup_text": "Treffen 7 Tage die Woche im Zentrum von Wallis verfügbar.",
   "commitment": "Unser Engagement",
-  "paymentMethods": "Zahlungsmethoden",
-  "orderNow": "Kontaktieren Sie uns"
+  "commitment_text": "Produkte sorgfältig ausgewählt, um Qualität, Sicherheit und Zufriedenheit zu gewährleisten.",
+  "payment_methods": "Zahlungsmethoden",
+  "cash_payment": "Barzahlung",
+  "cash_delivery": "Bei Lieferung",
+  "crypto_payment": "Kryptowährung",
+  "crypto_advance": "Vorauszahlung",
+  "rights": "Alle Rechte vorbehalten"
 }

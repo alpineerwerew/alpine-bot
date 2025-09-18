@@ -1,13 +1,16 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import products from "../data/products.json"; // ⚡ Lecture des données
+import products from "../data/products.json";
+import { useTranslation } from "react-i18next";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language; // langue active
   const product = products.find((p) => p.id === parseInt(id));
 
   if (!product) {
-    return <div className="text-white p-6">❌ Produit introuvable</div>;
+    return <div className="text-white p-6">❌ {t("product_not_found")}</div>;
   }
 
   return (
@@ -42,7 +45,7 @@ export default function ProductDetail() {
                   {product.title}
                 </h2>
                 <span className="text-sm font-medium px-3 py-1.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 flex items-center self-start shadow-sm">
-                  Farm: {product.producer}
+                  {t("farm")}: {product.producer}
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -52,19 +55,18 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Description */}
+            {/* Description multilingue */}
             <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
-              <p
-                className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-line"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
+              <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                {product.description[lang] || product.description["fr"]}
+              </p>
             </div>
 
             {/* Strains / Variétés */}
             {product.strains?.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-lg font-semibold text-white">
-                  Variétés (Strains)
+                  {t("strains")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.strains.map((s, i) => (
@@ -83,7 +85,7 @@ export default function ProductDetail() {
             {/* Prix */}
             <div className="pt-2">
               <h3 className="text-lg font-semibold text-white mb-3">
-                Sélectionner la Quantité
+                {t("price")}
               </h3>
               <div className="flex flex-wrap gap-2.5">
                 {product.prices.map((p, index) => (
@@ -110,13 +112,13 @@ export default function ProductDetail() {
                 rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3.5 px-4 rounded-xl shadow-lg transition-all duration-300 font-medium"
               >
-                📩 Commander Maintenant
+                📩 {t("order_now")}
               </a>
               <Link
                 to="/products"
                 className="flex-1 flex items-center justify-center bg-gray-800 text-white py-3.5 px-4 rounded-xl shadow-lg"
               >
-                ⬅️ Retour
+                ⬅️ {t("back")}
               </Link>
             </div>
           </div>
