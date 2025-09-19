@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 export default function ProductDetail() {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
-  const lang = i18n.language; // langue active
+  const lang = i18n.language.split("-")[0]; // ✅ correction ici
   const product = products.find((p) => p.id === parseInt(id));
 
   if (!product) {

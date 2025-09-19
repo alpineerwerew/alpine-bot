@@ -35,7 +35,6 @@
       { "weight": "10x2G", "price": "1400 CHF" }
     ],
     "strains": [
-      { "name": "Dulce de Limon", "emoji": "🍋" },
       { "name": "Lazerjet", "emoji": "⚡" },
       { "name": "Sour Sprizter", "emoji": "🍇" },
       { "name": "Garlic Drip", "emoji": "🧄" }
