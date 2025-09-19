@@ -260,7 +260,8 @@ bot.onText(/\/listusers/, (msg) => {
 // ==========================
 app.use(express.static(path.join(__dirname, "dist")));
 
-app.get("*", (req, res) => {
+// ⚠️ Express 5 → utiliser "/*" au lieu de "*"
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
