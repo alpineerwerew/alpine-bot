@@ -1,11 +1,11 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + SQLite + React
+// Alpine Connexion Bot - Render + Webhook + JSON
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 
 // 🔑 Token du bot depuis Render (.env)
@@ -35,57 +35,34 @@ app.post(`/bot${token}`, (req, res) => {
 });
 
 // ==========================
-// Base de données SQLite
+// Base utilisateurs JSON
 // ==========================
-const db = new sqlite3.Database("users.db", (err) => {
-  if (err) {
-    console.error("❌ Erreur connexion DB:", err.message);
-  } else {
-    console.log("✅ Connecté à SQLite (users.db)");
+const USERS_FILE = "users.json";
+
+// Charger les utilisateurs
+function getUsers() {
+  if (!fs.existsSync(USERS_FILE)) {
+    fs.writeFileSync(USERS_FILE, JSON.stringify([]));
   }
-});
+  return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+}
 
-// Créer la table si elle n’existe pas
-db.run(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
-    first_name TEXT,
-    last_name TEXT,
-    username TEXT
-  )
-`);
-
-const ADMIN_ID = "8424992186"; // Ton ID admin
+// Sauvegarder les utilisateurs
+function saveUsers(users) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
 
 // Ajouter un utilisateur
 function addUser(user) {
-  db.get("SELECT id FROM users WHERE id = ?", [user.id], (err, row) => {
-    if (err) return console.error("❌ Erreur SELECT:", err.message);
-
-    if (!row) {
-      db.run(
-        "INSERT INTO users (id, first_name, last_name, username) VALUES (?, ?, ?, ?)",
-        [user.id, user.first_name, user.last_name, user.username],
-        (err) => {
-          if (err) console.error("❌ Erreur INSERT:", err.message);
-          else console.log(`✅ Nouvel utilisateur ajouté: ${JSON.stringify(user)}`);
-        }
-      );
-    }
-  });
+  let users = getUsers();
+  if (!users.find((u) => u.id === user.id)) {
+    users.push(user);
+    saveUsers(users);
+    console.log(`✅ Nouvel utilisateur ajouté: ${JSON.stringify(user)}`);
+  }
 }
 
-// Récupérer tous les utilisateurs
-function getUsers(callback) {
-  db.all("SELECT * FROM users", [], (err, rows) => {
-    if (err) {
-      console.error("❌ Erreur SELECT:", err.message);
-      callback([]);
-    } else {
-      callback(rows);
-    }
-  });
-}
+const ADMIN_ID = "8424992186"; // Ton ID admin
 
 // ==========================
 // Textes traduits
@@ -215,22 +192,17 @@ function sendMainMenu(chatId, lang) {
 // ==========================
 bot.onText(/\/sendall (.+)/, (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
-    return bot.sendMessage(
-      msg.chat.id,
-      "⛔️ Tu n’es pas autorisé à utiliser cette commande."
-    );
+    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
   }
 
   const text = match[1];
-  getUsers((users) => {
-    users.forEach((user) => {
-      bot
-        .sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
-        .catch(() => {});
-    });
+  const users = getUsers();
 
-    bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
+  users.forEach((user) => {
+    bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" }).catch(() => {});
   });
+
+  bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
 });
 
 // ==========================
@@ -241,18 +213,13 @@ bot.onText(/\/listusers/, (msg) => {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
   }
 
-  getUsers((users) => {
-    if (users.length === 0) {
-      return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
-    }
+  const users = getUsers();
+  if (users.length === 0) {
+    return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
+  }
 
-    let list = users
-      .map((u) => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`)
-      .join("\n");
-    bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, {
-      parse_mode: "Markdown",
-    });
-  });
+  let list = users.map(u => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`).join("\n");
+  bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, { parse_mode: "Markdown" });
 });
 
 // ==========================
