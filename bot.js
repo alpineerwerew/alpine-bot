@@ -1,10 +1,11 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + SQLite
+// Alpine Connexion Bot - Render + Webhook + SQLite + React
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
 require("dotenv").config();
 
 // 🔑 Token du bot depuis Render (.env)
@@ -154,15 +155,19 @@ bot.onText(/\/start/, (msg) => {
 
   addUser(user);
 
-  bot.sendMessage(chatId, "🌍 Choisissez votre langue / Choose your language / Wählen Sie Ihre Sprache :", {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "🇫🇷 Français", callback_data: "lang_fr" }],
-        [{ text: "🇬🇧 English", callback_data: "lang_en" }],
-        [{ text: "🇩🇪 Deutsch", callback_data: "lang_de" }],
-      ],
-    },
-  });
+  bot.sendMessage(
+    chatId,
+    "🌍 Choisissez votre langue / Choose your language / Wählen Sie Ihre Sprache :",
+    {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🇫🇷 Français", callback_data: "lang_fr" }],
+          [{ text: "🇬🇧 English", callback_data: "lang_en" }],
+          [{ text: "🇩🇪 Deutsch", callback_data: "lang_de" }],
+        ],
+      },
+    }
+  );
 });
 
 // ==========================
@@ -210,13 +215,18 @@ function sendMainMenu(chatId, lang) {
 // ==========================
 bot.onText(/\/sendall (.+)/, (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
-    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
+    return bot.sendMessage(
+      msg.chat.id,
+      "⛔️ Tu n’es pas autorisé à utiliser cette commande."
+    );
   }
 
   const text = match[1];
   getUsers((users) => {
     users.forEach((user) => {
-      bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" }).catch(() => {});
+      bot
+        .sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
+        .catch(() => {});
     });
 
     bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
@@ -236,16 +246,22 @@ bot.onText(/\/listusers/, (msg) => {
       return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
     }
 
-    let list = users.map(u => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`).join("\n");
-    bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, { parse_mode: "Markdown" });
+    let list = users
+      .map((u) => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`)
+      .join("\n");
+    bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, {
+      parse_mode: "Markdown",
+    });
   });
 });
 
 // ==========================
-// Express server
+// Express server + React
 // ==========================
-app.get("/", (req, res) => {
-  res.send("🤖 Bot Alpine Connexion est en ligne via Webhook 🚀");
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
