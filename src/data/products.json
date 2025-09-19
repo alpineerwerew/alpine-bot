@@ -31,8 +31,8 @@
     "prices": [
       { "weight": "2G", "price": "180 CHF" },
       { "weight": "3x2G", "price": "450 CHF" },
-      { "weight": "5x2G", "price": "850 CHF" },
-      { "weight": "10x2G", "price": "1500 CHF" }
+      { "weight": "5x2G", "price": "720 CHF" },
+      { "weight": "10x2G", "price": "1400 CHF" }
     ],
     "strains": [
       { "name": "Dulce de Limon", "emoji": "🍋" },
