@@ -46,7 +46,8 @@ const pool = new Pool({
       id BIGINT PRIMARY KEY,
       first_name TEXT,
       last_name TEXT,
-      username TEXT
+      username TEXT,
+      lang TEXT DEFAULT 'fr'
     )
   `);
   console.log("✅ Table users prête");
@@ -56,14 +57,34 @@ const pool = new Pool({
 async function addUser(user) {
   try {
     await pool.query(
-      `INSERT INTO users (id, first_name, last_name, username)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO users (id, first_name, last_name, username, lang)
+       VALUES ($1, $2, $3, $4, 'fr')
        ON CONFLICT (id) DO NOTHING`,
       [user.id, user.first_name, user.last_name, user.username]
     );
     console.log(`✅ Utilisateur ajouté : ${JSON.stringify(user)}`);
   } catch (err) {
     console.error("❌ Erreur INSERT:", err.message);
+  }
+}
+
+// Mettre à jour la langue
+async function updateLang(userId, lang) {
+  try {
+    await pool.query("UPDATE users SET lang=$1 WHERE id=$2", [lang, userId]);
+  } catch (err) {
+    console.error("❌ Erreur UPDATE lang:", err.message);
+  }
+}
+
+// Récupérer un utilisateur
+async function getUser(id) {
+  try {
+    const res = await pool.query("SELECT * FROM users WHERE id=$1", [id]);
+    return res.rows[0];
+  } catch (err) {
+    console.error("❌ Erreur SELECT user:", err.message);
+    return null;
   }
 }
 
@@ -148,6 +169,12 @@ bot.onText(/\/start/, async (msg) => {
 
   await addUser(user);
 
+  // Récupère la langue sauvegardée
+  const existingUser = await getUser(chatId);
+  if (existingUser && existingUser.lang) {
+    return sendMainMenu(chatId, existingUser.lang);
+  }
+
   bot.sendMessage(
     chatId,
     "🌍 Choisissez votre langue / Choose your language / Wählen Sie Ihre Sprache :",
@@ -166,12 +193,13 @@ bot.onText(/\/start/, async (msg) => {
 // ==========================
 // Boutons
 // ==========================
-bot.on("callback_query", (query) => {
+bot.on("callback_query", async (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
 
   if (data.startsWith("lang_")) {
     const lang = data.split("_")[1];
+    await updateLang(chatId, lang); // ✅ sauvegarde en DB
     sendMainMenu(chatId, lang);
   }
 
@@ -234,7 +262,7 @@ bot.onText(/\/listusers/, async (msg) => {
     return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
   }
 
-  let list = users.map(u => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`).join("\n");
+  let list = users.map(u => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id} [${u.lang}]`).join("\n");
   bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, { parse_mode: "Markdown" });
 });
 
