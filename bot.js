@@ -1,11 +1,11 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + JSON
+// Alpine Connexion Bot - Render + Webhook + PostgreSQL
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
 const express = require("express");
 const path = require("path");
-const fs = require("fs");
+const { Pool } = require("pg"); // ✅ PostgreSQL
 require("dotenv").config();
 
 // 🔑 Token du bot depuis Render (.env)
@@ -23,11 +23,8 @@ const bot = new TelegramBot(token, { webHook: true });
 
 // ⚠️ URL Render → adapte avec ton vrai lien
 const url = "https://alpine-bot-p68h.onrender.com";
-
-// Définir le webhook
 bot.setWebHook(`${url}/bot${token}`);
 
-// Middleware Express pour traiter les updates Telegram
 app.use(express.json());
 app.post(`/bot${token}`, (req, res) => {
   bot.processUpdate(req.body);
@@ -35,30 +32,49 @@ app.post(`/bot${token}`, (req, res) => {
 });
 
 // ==========================
-// Base utilisateurs JSON
+// PostgreSQL
 // ==========================
-const USERS_FILE = "users.json";
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-// Charger les utilisateurs
-function getUsers() {
-  if (!fs.existsSync(USERS_FILE)) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify([]));
-  }
-  return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
-}
-
-// Sauvegarder les utilisateurs
-function saveUsers(users) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-}
+// Créer table si elle n'existe pas
+(async () => {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id BIGINT PRIMARY KEY,
+      first_name TEXT,
+      last_name TEXT,
+      username TEXT
+    )
+  `);
+  console.log("✅ Table users prête");
+})();
 
 // Ajouter un utilisateur
-function addUser(user) {
-  let users = getUsers();
-  if (!users.find((u) => u.id === user.id)) {
-    users.push(user);
-    saveUsers(users);
-    console.log(`✅ Nouvel utilisateur ajouté: ${JSON.stringify(user)}`);
+async function addUser(user) {
+  try {
+    await pool.query(
+      `INSERT INTO users (id, first_name, last_name, username)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (id) DO NOTHING`,
+      [user.id, user.first_name, user.last_name, user.username]
+    );
+    console.log(`✅ Utilisateur ajouté : ${JSON.stringify(user)}`);
+  } catch (err) {
+    console.error("❌ Erreur INSERT:", err.message);
+  }
+}
+
+// Récupérer tous les utilisateurs
+async function getUsers() {
+  try {
+    const res = await pool.query("SELECT * FROM users");
+    return res.rows;
+  } catch (err) {
+    console.error("❌ Erreur SELECT:", err.message);
+    return [];
   }
 }
 
@@ -121,7 +137,7 @@ const texts = {
 // ==========================
 // Commande /start
 // ==========================
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const user = {
     id: chatId,
@@ -130,7 +146,7 @@ bot.onText(/\/start/, (msg) => {
     username: msg.chat.username || "",
   };
 
-  addUser(user);
+  await addUser(user);
 
   bot.sendMessage(
     chatId,
@@ -190,17 +206,17 @@ function sendMainMenu(chatId, lang) {
 // ==========================
 // Commande /sendall
 // ==========================
-bot.onText(/\/sendall (.+)/, (msg, match) => {
+bot.onText(/\/sendall (.+)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
   }
 
   const text = match[1];
-  const users = getUsers();
+  const users = await getUsers();
 
-  users.forEach((user) => {
+  for (const user of users) {
     bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" }).catch(() => {});
-  });
+  }
 
   bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
 });
@@ -208,12 +224,12 @@ bot.onText(/\/sendall (.+)/, (msg, match) => {
 // ==========================
 // Commande /listusers
 // ==========================
-bot.onText(/\/listusers/, (msg) => {
+bot.onText(/\/listusers/, async (msg) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
   }
 
-  const users = getUsers();
+  const users = await getUsers();
   if (users.length === 0) {
     return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
   }
@@ -226,8 +242,6 @@ bot.onText(/\/listusers/, (msg) => {
 // Express server + React
 // ==========================
 app.use(express.static(path.join(__dirname, "dist")));
-
-// ✅ Express 5 → utiliser une regex pour catch-all
 app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
