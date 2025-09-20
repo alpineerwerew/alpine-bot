@@ -7,7 +7,6 @@ export default function ProductDetail() {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
 
-  // ✅ Gestion propre des langues
   const supportedLangs = ["fr", "en", "de"];
   const rawLang = i18n.language.split("-")[0];
   const lang = supportedLangs.includes(rawLang) ? rawLang : "fr";

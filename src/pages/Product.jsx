@@ -7,7 +7,7 @@ export default function Product() {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lang) => {
-    i18n.changeLanguage(lang);
+    i18n.changeLanguage(lang); // ✅ sera sauvegardé automatiquement
   };
 
   return (
@@ -30,19 +30,31 @@ export default function Product() {
             <div className="flex justify-center gap-4 mb-6">
               <button
                 onClick={() => changeLanguage("fr")}
-                className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-yellow-500/30 transition"
+                className={`px-3 py-1 rounded-lg ${
+                  i18n.language.startsWith("fr")
+                    ? "bg-yellow-500 text-black font-bold"
+                    : "bg-gray-800 hover:bg-yellow-500/30"
+                }`}
               >
                 🇫🇷
               </button>
               <button
                 onClick={() => changeLanguage("en")}
-                className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-yellow-500/30 transition"
+                className={`px-3 py-1 rounded-lg ${
+                  i18n.language.startsWith("en")
+                    ? "bg-yellow-500 text-black font-bold"
+                    : "bg-gray-800 hover:bg-yellow-500/30"
+                }`}
               >
                 🇬🇧
               </button>
               <button
                 onClick={() => changeLanguage("de")}
-                className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-yellow-500/30 transition"
+                className={`px-3 py-1 rounded-lg ${
+                  i18n.language.startsWith("de")
+                    ? "bg-yellow-500 text-black font-bold"
+                    : "bg-gray-800 hover:bg-yellow-500/30"
+                }`}
               >
                 🇩🇪
               </button>
