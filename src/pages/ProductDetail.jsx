@@ -6,7 +6,12 @@ import { useTranslation } from "react-i18next";
 export default function ProductDetail() {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
-  const lang = i18n.language.split("-")[0]; // ✅ correction ici
+
+  // ✅ Gestion propre des langues
+  const supportedLangs = ["fr", "en", "de"];
+  const rawLang = i18n.language.split("-")[0];
+  const lang = supportedLangs.includes(rawLang) ? rawLang : "fr";
+
   const product = products.find((p) => p.id === parseInt(id));
 
   if (!product) {
@@ -26,7 +31,35 @@ export default function ProductDetail() {
 
       <div className="max-w-4xl mx-auto pb-20 relative z-10">
         <div className="bg-gradient-to-b from-gray-800/90 to-gray-900/95 rounded-2xl shadow-2xl overflow-hidden border border-gray-700/80 backdrop-blur-sm">
-          
+
+          {/* ✅ Sélecteur de langue */}
+          <div className="flex justify-end gap-2 p-3">
+            <button
+              onClick={() => i18n.changeLanguage("fr")}
+              className={`px-3 py-1 rounded-lg text-sm ${
+                lang === "fr" ? "bg-yellow-500 text-black font-bold" : "bg-gray-700 text-white"
+              }`}
+            >
+              🇫🇷 FR
+            </button>
+            <button
+              onClick={() => i18n.changeLanguage("en")}
+              className={`px-3 py-1 rounded-lg text-sm ${
+                lang === "en" ? "bg-yellow-500 text-black font-bold" : "bg-gray-700 text-white"
+              }`}
+            >
+              🇬🇧 EN
+            </button>
+            <button
+              onClick={() => i18n.changeLanguage("de")}
+              className={`px-3 py-1 rounded-lg text-sm ${
+                lang === "de" ? "bg-yellow-500 text-black font-bold" : "bg-gray-700 text-white"
+              }`}
+            >
+              🇩🇪 DE
+            </button>
+          </div>
+
           {/* Image produit */}
           <div className="relative overflow-hidden rounded-2xl shadow-lg flex justify-center bg-black">
             <img
