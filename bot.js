@@ -86,50 +86,50 @@ const ADMIN_ID = "8424992186"; // Ton ID admin
 const texts = {
   fr: {
     welcome: "💛 Bienvenue chez *Alpine Connexion* 💛",
-    info: `📦 *Envois*
-• Suisse 🇨🇭 et International ✈️ avec suivi et assurance
+    info: `💖 *Alpine Connexion – Informations*
 
-🤝 *Meetup*
-📍 Valais Centre
-🕒 7j/7
+📦 *Envois*
+• 🇨🇭 Suisse & ✈️ International  
+• Avec suivi + assurance  
 
-💳 *Paiement*
-• 💶 Cash
-• ₿ Crypto (paiement anticipé)
+💳 *Paiements*  
+• 💶 Cash  
+• ₿ Crypto (paiement anticipé)  
 
-✨ Qualité garantie, service premium.`,
+✨ *Notre Engagement*  
+Qualité garantie & service premium 💎`,
     back: "⬅️ Retour au menu principal",
   },
   en: {
     welcome: "💛 Welcome to *Alpine Connexion* 💛",
-    info: `📦 *Shipping*
-• Switzerland 🇨🇭 & International ✈️ with tracking and insurance
+    info: `💖 *Alpine Connexion – Information*
 
-🤝 *Meetup*
-📍 Valais Center
-🕒 7 days a week
+📦 *Shipping*  
+• 🇨🇭 Switzerland & ✈️ International  
+• With tracking + insurance  
 
-💳 *Payment*
-• 💶 Cash
-• ₿ Crypto (advance payment)
+💳 *Payment Methods*  
+• 💶 Cash  
+• ₿ Crypto (advance payment)  
 
-✨ Guaranteed quality, premium service.`,
+✨ *Our Commitment*  
+Guaranteed quality & premium service 💎`,
     back: "⬅️ Back to main menu",
   },
   de: {
     welcome: "💛 Willkommen bei *Alpine Connexion* 💛",
-    info: `📦 *Versand*
-• Schweiz 🇨🇭 & International ✈️ mit Sendungsverfolgung und Versicherung
+    info: `💖 *Alpine Connexion – Informationen*
 
-🤝 *Treffen*
-📍 Valais Zentrum
-🕒 7 Tage die Woche
+📦 *Versand*  
+• 🇨🇭 Schweiz & ✈️ International  
+• Mit Sendungsverfolgung + Versicherung  
 
-💳 *Zahlung*
-• 💶 Bargeld
-• ₿ Krypto (Vorauszahlung)
+💳 *Zahlungsarten*  
+• 💶 Bargeld  
+• ₿ Krypto (Vorauszahlung)  
 
-✨ Garantierte Qualität, Premium-Service.`,
+✨ *Unser Versprechen*  
+Garantierte Qualität & Premium-Service 💎`,
     back: "⬅️ Zurück zum Hauptmenü",
   },
 };
