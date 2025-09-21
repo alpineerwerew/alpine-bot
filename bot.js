@@ -225,7 +225,7 @@ bot.onText(/\/sendall (.+)/, async (msg, match) => {
 // ==========================
 // Commande /listusers
 // ==========================
-bot.onText(/\/listusers/, async (msg) => {
+bot.onText(/^\/listusers?/, async (msg) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
   }
@@ -235,8 +235,12 @@ bot.onText(/\/listusers/, async (msg) => {
     return bot.sendMessage(msg.chat.id, "📂 Aucun utilisateur enregistré.");
   }
 
-  let list = users.map(u => `• ${u.first_name} (@${u.username || "aucun"}) – ${u.id}`).join("\n");
-  bot.sendMessage(msg.chat.id, `📋 *Utilisateurs enregistrés* :\n\n${list}`, { parse_mode: "Markdown" });
+  let list = users
+    .map((u) => `• ${u.first_name || ""} (@${u.username || "aucun"}) – ${u.id}`)
+    .join("\n");
+
+  // ✅ Pas de parse_mode ici pour éviter les erreurs Telegram
+  bot.sendMessage(msg.chat.id, `📋 Utilisateurs enregistrés :\n\n${list}`);
 });
 
 // ==========================
