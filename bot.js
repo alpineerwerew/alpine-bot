@@ -205,8 +205,10 @@ function sendMainMenu(chatId, lang) {
 }
 
 // ==========================
-// Commande /sendall
+// Commande /sendall & /sendalltest (auto-suppression après 24h)
 // ==========================
+const DELETE_DELAY = 24 * 60 * 60 * 1000;
+
 bot.onText(/\/sendall (.+)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
@@ -216,10 +218,44 @@ bot.onText(/\/sendall (.+)/, async (msg, match) => {
   const users = await getUsers();
 
   for (const user of users) {
-    bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" }).catch(() => {});
+    bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
+      .then((sentMsg) => {
+        setTimeout(() => {
+          bot.deleteMessage(user.id, sentMsg.message_id).catch(() => {});
+        }, DELETE_DELAY);
+      })
+      .catch(() => {});
   }
 
-  bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`);
+  bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`)
+    .then((sentMsg) => {
+      setTimeout(() => {
+        bot.deleteMessage(msg.chat.id, sentMsg.message_id).catch(() => {});
+      }, DELETE_DELAY);
+    });
+});
+
+bot.onText(/\/sendalltest (.+)/, async (msg, match) => {
+  if (msg.chat.id.toString() !== ADMIN_ID) {
+    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
+  }
+
+  const text = match[1];
+
+  bot.sendMessage(msg.chat.id, `📢 *TEST Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
+    .then((sentMsg) => {
+      setTimeout(() => {
+        bot.deleteMessage(msg.chat.id, sentMsg.message_id).catch(() => {});
+      }, DELETE_DELAY);
+
+      bot.sendMessage(msg.chat.id, "✅ Message test envoyé uniquement à toi (sera supprimé dans 24h).")
+        .then((confirmMsg) => {
+          setTimeout(() => {
+            bot.deleteMessage(msg.chat.id, confirmMsg.message_id).catch(() => {});
+          }, DELETE_DELAY);
+        });
+    })
+    .catch(() => {});
 });
 
 // ==========================
@@ -239,7 +275,6 @@ bot.onText(/^\/listusers?/, async (msg) => {
     .map((u) => `• ${u.first_name || ""} (@${u.username || "aucun"}) – ${u.id}`)
     .join("\n");
 
-  // ✅ Pas de parse_mode ici pour éviter les erreurs Telegram
   bot.sendMessage(msg.chat.id, `📋 Utilisateurs enregistrés :\n\n${list}`);
 });
 
