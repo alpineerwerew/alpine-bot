@@ -1,5 +1,5 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + PostgreSQL (simplifié, sans "lang")
+// Alpine Connexion Bot - Render + Webhook + PostgreSQL (avec /sendto)
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
@@ -148,7 +148,6 @@ bot.onText(/\/start/, async (msg) => {
 
   await addUser(user);
 
-  // Demande la langue à chaque fois (pas sauvegardée)
   bot.sendMessage(
     chatId,
     "🌍 Choisissez votre langue / Choose your language / Wählen Sie Ihre Sprache :",
@@ -256,6 +255,29 @@ bot.onText(/\/sendalltest([\s\S]*)/, async (msg, match) => {
         });
     })
     .catch(() => {});
+});
+
+// ==========================
+// Commande /sendto <user_id> <message>
+// ==========================
+bot.onText(/^\/sendto (\d+) (.+)/, async (msg, match) => {
+  if (msg.chat.id.toString() !== ADMIN_ID) {
+    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
+  }
+
+  const targetId = match[1];   // ID utilisateur
+  const text = match[2];       // Texte du message
+
+  console.log(`📤 Tentative d'envoi à ${targetId} : ${text}`);
+
+  bot.sendMessage(targetId, `📩 *Message privé* :\n\n${text}`, { parse_mode: "Markdown" })
+    .then(() => {
+      bot.sendMessage(msg.chat.id, `✅ Message envoyé à l’utilisateur ${targetId}`);
+    })
+    .catch((err) => {
+      console.error(`❌ Erreur envoi à ${targetId}:`, err.message);
+      bot.sendMessage(msg.chat.id, `⚠️ Erreur lors de l’envoi à ${targetId} : ${err.message}`);
+    });
 });
 
 // ==========================
