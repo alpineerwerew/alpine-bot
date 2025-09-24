@@ -1,5 +1,5 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + PostgreSQL (avec /sendto)
+// Alpine Connexion Bot - Render + Webhook + PostgreSQL
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
@@ -204,7 +204,7 @@ function sendMainMenu(chatId, lang) {
 }
 
 // ==========================
-// Commande /sendall & /sendalltest (auto-suppression après 24h)
+// Commande /sendall (avec debug Render)
 // ==========================
 const DELETE_DELAY = 24 * 60 * 60 * 1000;
 
@@ -216,24 +216,30 @@ bot.onText(/\/sendall([\s\S]*)/, async (msg, match) => {
   const text = match[1].trim();
   const users = await getUsers();
 
+  console.log("=== 📡 DEBUG SENDALL ===");
+  console.log(`Texte envoyé : "${text}"`);
+  console.log(`Nombre d’utilisateurs en DB : ${users.length}`);
+
   for (const user of users) {
+    console.log(`📤 Envoi prévu pour ID: ${user.id} (@${user.username || "aucun"})`);
     bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
       .then((sentMsg) => {
+        console.log(`✅ Succès pour ${user.id}`);
         setTimeout(() => {
           bot.deleteMessage(user.id, sentMsg.message_id).catch(() => {});
         }, DELETE_DELAY);
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error(`❌ Erreur pour ${user.id}:`, err.message);
+      });
   }
 
-  bot.sendMessage(msg.chat.id, `✅ Message envoyé à ${users.length} utilisateurs.`)
-    .then((sentMsg) => {
-      setTimeout(() => {
-        bot.deleteMessage(msg.chat.id, sentMsg.message_id).catch(() => {});
-      }, DELETE_DELAY);
-    });
+  bot.sendMessage(msg.chat.id, `🔎 Tentative d’envoi à ${users.length} utilisateurs... Voir logs Render.`);
 });
 
+// ==========================
+// Commande /sendalltest (uniquement admin)
+// ==========================
 bot.onText(/\/sendalltest([\s\S]*)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
@@ -308,7 +314,8 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// ✅ Port Render (important !)
+const PORT = process.env.PORT;
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
