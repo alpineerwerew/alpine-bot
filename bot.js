@@ -187,7 +187,7 @@ bot.on("callback_query", async (query) => {
 });
 
 // ==========================
-// Menu principal
+// Menu principal (sans bouton website)
 // ==========================
 function sendMainMenu(chatId, lang) {
   bot.sendPhoto(chatId, "https://i.ibb.co/Xk75qN15/logo.jpg", {
@@ -196,8 +196,9 @@ function sendMainMenu(chatId, lang) {
     reply_markup: {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
+        [{ text: "📋 Menu", callback_data: "show_menu" }],
         [{ text: "📞 Contact", url: "https://linktr.ee/alpinec" }],
-        [{ text: "📱 Mini-App", url: "https://alpine-bot-p68h.onrender.com/" }],
+        // ❌ Bouton "📱 Mini-App" retiré
       ],
     },
   });

@@ -7,7 +7,7 @@ export default function Product() {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lang) => {
-    i18n.changeLanguage(lang); // ✅ sera sauvegardé automatiquement
+    i18n.changeLanguage(lang);
   };
 
   return (
@@ -75,11 +75,13 @@ export default function Product() {
                 >
                   <div className="cursor-pointer flex flex-col w-full relative overflow-hidden rounded-2xl bg-gray-900/60 backdrop-blur-md border border-gray-700 shadow-lg transition-all duration-300 hover:shadow-yellow-500/30 hover:border-yellow-400 hover:scale-[1.03]">
                     <div className="relative aspect-square overflow-hidden">
-                      <img
-                        src={p.image}
-                        alt={p.title}
-                        className="object-cover w-full h-full transform transition-transform duration-500 hover:scale-110"
-                      />
+                      {p.media && p.media[0] && p.media[0].type === "image" && (
+                        <img
+                          src={p.media[0].src}
+                          alt={p.title}
+                          className="object-cover w-full h-full transform transition-transform duration-500 hover:scale-110"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
                       <div className="absolute bottom-3 left-3">
                         <span className="rounded-full bg-black/50 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white shadow-lg flex items-center gap-1.5">

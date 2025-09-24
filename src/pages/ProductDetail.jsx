@@ -59,14 +59,28 @@ export default function ProductDetail() {
             </button>
           </div>
 
-          {/* Image produit */}
-          <div className="relative overflow-hidden rounded-2xl shadow-lg flex justify-center bg-black">
-            <img
-              src={product.image}
-              alt={product.title}
-              className="w-full h-auto object-contain select-none"
-              loading="lazy"
-            />
+          {/* ✅ Images / Vidéos */}
+          <div className="relative overflow-hidden rounded-2xl shadow-lg flex flex-col gap-4 justify-center bg-black p-4">
+            {product.media?.map((m, i) =>
+              m.type === "image" ? (
+                <img
+                  key={i}
+                  src={m.src}
+                  alt={product.title}
+                  className="w-full h-auto object-contain select-none rounded-lg"
+                  loading="lazy"
+                />
+              ) : (
+                <video
+                  key={i}
+                  controls
+                  className="w-full h-auto object-contain rounded-lg"
+                >
+                  <source src={m.src} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )
+            )}
           </div>
 
           {/* Infos produit */}

@@ -9,7 +9,10 @@
       "en": "Zangbanger – a premium strain by Wizard Trees.",
       "de": "Zangbanger – eine Premium-Sorte von Wizard Trees."
     },
-    "image": "/images/zangbanger.jpg",
+    "media": [
+      { "type": "image", "src": "/images/zangbanger.jpg" },
+      { "type": "video", "src": "/videos/zangbanger.mp4" }
+    ],
     "prices": [
       { "weight": "3.5G", "price": "150 CHF" },
       { "weight": "7G", "price": "280 CHF" },
@@ -27,7 +30,9 @@
       "en": "🔥 Premium Live Hash Rosin – handcrafted extraction with pure and intense flavors.\n\n✨ Exceptional quality, staying true to the plant, for a unique experience.",
       "de": "🔥 Premium Live Hash Rosin – handgefertigte Extraktion mit reinen und intensiven Aromen.\n\n✨ Außergewöhnliche Qualität, naturgetreu, für ein einzigartiges Erlebnis."
     },
-    "image": "/images/boredrosin.jpg",
+    "media": [
+      { "type": "image", "src": "/images/boredrosin.jpg" }
+    ],
     "prices": [
       { "weight": "2G", "price": "180 CHF" },
       { "weight": "3x2G", "price": "450 CHF" },
@@ -38,6 +43,28 @@
       { "name": "Lazerjet", "emoji": "⚡" },
       { "name": "Sour Sprizter", "emoji": "🍇" },
       { "name": "Garlic Drip", "emoji": "🧄" }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "ICE CREAM CAKE",
+    "label": "USA 🇺🇸",
+    "producer": "WPFF USA 73u",
+    "description": {
+      "fr": "🍦 Ice Cream Cake – un classique crémeux et sucré par WPFF USA.",
+      "en": "🍦 Ice Cream Cake – a creamy and sweet classic by WPFF USA.",
+      "de": "🍦 Ice Cream Cake – ein cremiger und süßer Klassiker von WPFF USA."
+    },
+    "media": [
+      { "type": "image", "src": "/images/icecreamcake.png" },
+      { "type": "video", "src": "/videos/icecremcake1.mov" }
+    ],
+    "prices": [
+      { "weight": "5G", "price": "200 CHF" },
+      { "weight": "10G", "price": "350 CHF" },
+      { "weight": "25G", "price": "800 CHF" },
+      { "weight": "50G", "price": "1500 CHF" },
+      { "weight": "100G", "price": "2700 CHF" }
     ]
   }
 ]
