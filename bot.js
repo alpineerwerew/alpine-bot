@@ -1,5 +1,5 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + PostgreSQL
+// Alpine Connexion Bot - Render + Webhook + PostgreSQL (parse_mode = HTML)
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
@@ -85,50 +85,50 @@ const ADMIN_ID = "8424992186"; // Ton ID admin
 // ==========================
 const texts = {
   fr: {
-    welcome: "💛 Bienvenue chez *Alpine Connexion* 💛",
-    info: `💖 *Alpine Connexion – Informations*
+    welcome: "💛 Bienvenue chez <b>Alpine Connexion</b> 💛",
+    info: `💖 <b>Alpine Connexion – Informations</b>
 
-📦 *Envois*
+📦 <b>Envois</b>
 • 🇨🇭 Suisse & ✈️ International  
 • Avec suivi + assurance  
 
-💳 *Paiements*  
+💳 <b>Paiements</b>  
 • 💶 Cash  
 • ₿ Crypto (paiement anticipé)  
 
-✨ *Notre Engagement*  
+✨ <b>Notre Engagement</b>  
 Qualité garantie & service premium 💎`,
     back: "⬅️ Retour au menu principal",
   },
   en: {
-    welcome: "💛 Welcome to *Alpine Connexion* 💛",
-    info: `💖 *Alpine Connexion – Information*
+    welcome: "💛 Welcome to <b>Alpine Connexion</b> 💛",
+    info: `💖 <b>Alpine Connexion – Information</b>
 
-📦 *Shipping*  
+📦 <b>Shipping</b>  
 • 🇨🇭 Switzerland & ✈️ International  
 • With tracking + insurance  
 
-💳 *Payment Methods*  
+💳 <b>Payment Methods</b>  
 • 💶 Cash  
 • ₿ Crypto (advance payment)  
 
-✨ *Our Commitment*  
+✨ <b>Our Commitment</b>  
 Guaranteed quality & premium service 💎`,
     back: "⬅️ Back to main menu",
   },
   de: {
-    welcome: "💛 Willkommen bei *Alpine Connexion* 💛",
-    info: `💖 *Alpine Connexion – Informationen*
+    welcome: "💛 Willkommen bei <b>Alpine Connexion</b> 💛",
+    info: `💖 <b>Alpine Connexion – Informationen</b>
 
-📦 *Versand*  
+📦 <b>Versand</b>  
 • 🇨🇭 Schweiz & ✈️ International  
 • Mit Sendungsverfolgung + Versicherung  
 
-💳 *Zahlungsarten*  
+💳 <b>Zahlungsarten</b>  
 • 💶 Bargeld  
 • ₿ Krypto (Vorauszahlung)  
 
-✨ *Unser Versprechen*  
+✨ <b>Unser Versprechen</b>  
 Garantierte Qualität & Premium-Service 💎`,
     back: "⬅️ Zurück zum Hauptmenü",
   },
@@ -178,7 +178,7 @@ bot.on("callback_query", async (query) => {
   if (data.startsWith("info_")) {
     const lang = data.split("_")[1];
     bot.sendMessage(chatId, texts[lang].info, {
-      parse_mode: "Markdown",
+      parse_mode: "HTML",
       reply_markup: {
         inline_keyboard: [[{ text: texts[lang].back, callback_data: `lang_${lang}` }]],
       },
@@ -192,7 +192,7 @@ bot.on("callback_query", async (query) => {
 function sendMainMenu(chatId, lang) {
   bot.sendPhoto(chatId, "https://i.ibb.co/Xk75qN15/logo.jpg", {
     caption: texts[lang].welcome,
-    parse_mode: "Markdown",
+    parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
         [{ text: "ℹ️ Informations", callback_data: `info_${lang}` }],
@@ -204,7 +204,7 @@ function sendMainMenu(chatId, lang) {
 }
 
 // ==========================
-// Commande /sendall (avec debug Render)
+// Commande /sendall (HTML + debug Render)
 // ==========================
 const DELETE_DELAY = 24 * 60 * 60 * 1000;
 
@@ -222,7 +222,7 @@ bot.onText(/\/sendall([\s\S]*)/, async (msg, match) => {
 
   for (const user of users) {
     console.log(`📤 Envoi prévu pour ID: ${user.id} (@${user.username || "aucun"})`);
-    bot.sendMessage(user.id, `📢 *Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
+    bot.sendMessage(user.id, `<b>📢 Annonce :</b>\n\n${text}`, { parse_mode: "HTML" })
       .then((sentMsg) => {
         console.log(`✅ Succès pour ${user.id}`);
         setTimeout(() => {
@@ -247,13 +247,13 @@ bot.onText(/\/sendalltest([\s\S]*)/, async (msg, match) => {
 
   const text = match[1].trim();
 
-  bot.sendMessage(msg.chat.id, `📢 *TEST Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
+  bot.sendMessage(msg.chat.id, `<b>📢 TEST Annonce :</b>\n\n${text}`, { parse_mode: "HTML" })
     .then((sentMsg) => {
       setTimeout(() => {
         bot.deleteMessage(msg.chat.id, sentMsg.message_id).catch(() => {});
       }, DELETE_DELAY);
 
-      bot.sendMessage(msg.chat.id, "✅ Message test envoyé uniquement à toi (sera supprimé dans 24h).")
+      bot.sendMessage(msg.chat.id, "✅ Message test envoyé uniquement à toi (sera supprimé dans 24h).", { parse_mode: "HTML" })
         .then((confirmMsg) => {
           setTimeout(() => {
             bot.deleteMessage(msg.chat.id, confirmMsg.message_id).catch(() => {});
@@ -276,13 +276,13 @@ bot.onText(/^\/sendto (\d+) (.+)/, async (msg, match) => {
 
   console.log(`📤 Tentative d'envoi à ${targetId} : ${text}`);
 
-  bot.sendMessage(targetId, `📩 *Message privé* :\n\n${text}`, { parse_mode: "Markdown" })
+  bot.sendMessage(targetId, `<b>📩 Message privé :</b>\n\n${text}`, { parse_mode: "HTML" })
     .then(() => {
-      bot.sendMessage(msg.chat.id, `✅ Message envoyé à l’utilisateur ${targetId}`);
+      bot.sendMessage(msg.chat.id, `✅ Message envoyé à l’utilisateur ${targetId}`, { parse_mode: "HTML" });
     })
     .catch((err) => {
       console.error(`❌ Erreur envoi à ${targetId}:`, err.message);
-      bot.sendMessage(msg.chat.id, `⚠️ Erreur lors de l’envoi à ${targetId} : ${err.message}`);
+      bot.sendMessage(msg.chat.id, `⚠️ Erreur lors de l’envoi à ${targetId} : ${err.message}`, { parse_mode: "HTML" });
     });
 });
 
@@ -314,7 +314,7 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// ✅ Port Render (important !)
+// ✅ Port Render
 const PORT = process.env.PORT;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
