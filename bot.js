@@ -184,6 +184,51 @@ bot.on("callback_query", async (query) => {
       },
     });
   }
+
+  // ✅ Gérer le bouton "Menu"
+  if (data === "show_menu") {
+    const menuText = `
+🌴 <b>CALIFORNIA BRANDED</b>
+
+⚡️ <b>Wizard Tree – Zangbanger</b>
+• 3.5g = 150 CHF
+• 2 × 3.5g = 280 CHF
+• 4 × 3.5g = 550 CHF
+• 8 × 3.5g = 1000 CHF
+
+🍃 <b>TOPSHELF – Loose</b>
+✨ Wizard Tree
+• Gas Gimlet
+• Limelight
+
+📦 Prix :
+▪️ 5g = 110 CHF
+▪️ 10g = 180 CHF
+▪️ 20g = 350 CHF
+▪️ 50g = 800 CHF
+▪️ 100g = 1500 CHF
+
+🇺🇸 <b>WPFF USA</b>
+🍦 Ice Cream Cake
+▪️ 5g = 200 CHF
+▪️ 10g = 350 CHF
+▪️ 25g = 800 CHF
+▪️ 50g = 1500 CHF
+▪️ 100g = 2700 CHF
+
+🔥 <b>LIVE ROSIN</b>
+🧪 Bored Rosin
+• Garlic Drip
+• Lazerjet
+• Sour Spritzer
+
+▪️ 2g = 180 CHF
+▪️ 6g = 450 CHF
+▪️ 10g = 750 CHF
+▪️ 20g = 1300 CHF
+    `;
+    bot.sendMessage(chatId, menuText, { parse_mode: "HTML" });
+  }
 });
 
 // ==========================
