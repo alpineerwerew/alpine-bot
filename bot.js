@@ -209,12 +209,12 @@ function sendMainMenu(chatId, lang) {
 // ==========================
 const DELETE_DELAY = 24 * 60 * 60 * 1000;
 
-bot.onText(/\/sendall (.+)/, async (msg, match) => {
+bot.onText(/\/sendall([\s\S]*)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
   }
 
-  const text = match[1];
+  const text = match[1].trim();
   const users = await getUsers();
 
   for (const user of users) {
@@ -235,12 +235,12 @@ bot.onText(/\/sendall (.+)/, async (msg, match) => {
     });
 });
 
-bot.onText(/\/sendalltest (.+)/, async (msg, match) => {
+bot.onText(/\/sendalltest([\s\S]*)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
   }
 
-  const text = match[1];
+  const text = match[1].trim();
 
   bot.sendMessage(msg.chat.id, `📢 *TEST Annonce* :\n\n${text}`, { parse_mode: "Markdown" })
     .then((sentMsg) => {
