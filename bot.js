@@ -1,5 +1,5 @@
 // ==========================
-// Alpine Connexion Bot - Render + Webhook + PostgreSQL (parse_mode = HTML)
+// Alpine Connexion Bot - Render + Webhook + PostgreSQL
 // ==========================
 
 const TelegramBot = require("node-telegram-bot-api");
@@ -81,7 +81,7 @@ async function getUsers() {
 const ADMIN_ID = "8424992186"; // Ton ID admin
 
 // ==========================
-// Textes traduits
+// Textes (HTML)
 // ==========================
 const texts = {
   fr: {
@@ -204,61 +204,50 @@ function sendMainMenu(chatId, lang) {
 }
 
 // ==========================
-// Commande /sendall (HTML + debug Render)
+// Diffusion (/sendall = tout le monde, /test = admin)
 // ==========================
 const DELETE_DELAY = 24 * 60 * 60 * 1000;
 
+// /sendall → envoie à TOUS
 bot.onText(/\/sendall([\s\S]*)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
-    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
+    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
   }
 
   const text = match[1].trim();
   const users = await getUsers();
 
   console.log("=== 📡 DEBUG SENDALL ===");
-  console.log(`Texte envoyé : "${text}"`);
+  console.log(`Texte : "${text}"`);
   console.log(`Nombre d’utilisateurs en DB : ${users.length}`);
 
   for (const user of users) {
-    console.log(`📤 Envoi prévu pour ID: ${user.id} (@${user.username || "aucun"})`);
     bot.sendMessage(user.id, `<b>📢 Annonce :</b>\n\n${text}`, { parse_mode: "HTML" })
       .then((sentMsg) => {
-        console.log(`✅ Succès pour ${user.id}`);
         setTimeout(() => {
           bot.deleteMessage(user.id, sentMsg.message_id).catch(() => {});
         }, DELETE_DELAY);
+        console.log(`✅ Succès pour ${user.id}`);
       })
-      .catch((err) => {
-        console.error(`❌ Erreur pour ${user.id}:`, err.message);
-      });
+      .catch((err) => console.error(`❌ Erreur pour ${user.id}:`, err.message));
   }
 
-  bot.sendMessage(msg.chat.id, `🔎 Tentative d’envoi à ${users.length} utilisateurs... Voir logs Render.`);
+  bot.sendMessage(msg.chat.id, `🔎 /sendall : tentative d’envoi à ${users.length} utilisateurs.`);
 });
 
-// ==========================
-// Commande /sendalltest (uniquement admin)
-// ==========================
-bot.onText(/\/sendalltest([\s\S]*)/, async (msg, match) => {
+// /test → envoie UNIQUEMENT à l’admin
+bot.onText(/\/test([\s\S]*)/, async (msg, match) => {
   if (msg.chat.id.toString() !== ADMIN_ID) {
-    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé à utiliser cette commande.");
+    return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
   }
 
   const text = match[1].trim();
 
-  bot.sendMessage(msg.chat.id, `<b>📢 TEST Annonce :</b>\n\n${text}`, { parse_mode: "HTML" })
+  bot.sendMessage(msg.chat.id, `<b>📢 TEST :</b>\n\n${text}`, { parse_mode: "HTML" })
     .then((sentMsg) => {
       setTimeout(() => {
         bot.deleteMessage(msg.chat.id, sentMsg.message_id).catch(() => {});
       }, DELETE_DELAY);
-
-      bot.sendMessage(msg.chat.id, "✅ Message test envoyé uniquement à toi (sera supprimé dans 24h).", { parse_mode: "HTML" })
-        .then((confirmMsg) => {
-          setTimeout(() => {
-            bot.deleteMessage(msg.chat.id, confirmMsg.message_id).catch(() => {});
-          }, DELETE_DELAY);
-        });
     })
     .catch(() => {});
 });
@@ -271,8 +260,8 @@ bot.onText(/^\/sendto (\d+) (.+)/, async (msg, match) => {
     return bot.sendMessage(msg.chat.id, "⛔️ Tu n’es pas autorisé.");
   }
 
-  const targetId = match[1];   // ID utilisateur
-  const text = match[2];       // Texte du message
+  const targetId = match[1];
+  const text = match[2];
 
   console.log(`📤 Tentative d'envoi à ${targetId} : ${text}`);
 
